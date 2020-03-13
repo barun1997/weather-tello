@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { format } from "date-fns";
 
+import { addRecentSearch } from "../util/recentSearch";
 import { weatherAPI } from "../util/weatherAPI";
 import { Container } from "../components/Container";
 import { WeatherIcon } from "../components/WeatherIcon";
@@ -39,8 +40,6 @@ const groupForecastByDay = list => {
       ...data[key]
     };
   });
-
-  console.log(formattedList);
   return formattedList;
 };
 
@@ -57,21 +56,29 @@ export default class Details extends React.Component {
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
-      console.log(position);
       this.getCurrentWeather({ coords: position.coords });
       this.getForecast({ coords: position.coords });
     });
-    console.log("is it called inside?");
   }
 
   componentDidUpdate(prevProps) {
     const { route } = this.props;
-    console.log("Inside componentDidUpdate", route);
-    if (route.params.zipcode) {
+
+    if (route.params.lat && route.params.lon) {
+      const oldLat = prevProps.route.params.lat;
+      const oldLon = prevProps.route.params.lon;
+
+      const lat = route.params.lat;
+      const lon = route.params.lon;
+
+      if (lat && oldLat !== lat && lon && oldLon !== lon) {
+        this.getCurrentWeather({ coords: { latitude: lat, longitude: lon } });
+        this.getForecast({ coords: { latitude: lat, longitude: lon } });
+      }
+    } else if (route.params.zipcode) {
       const oldZipcode = prevProps.route.params.zipcode;
       const zipcode = route.params.zipcode;
-
-      if (oldZipcode !== zipcode) {
+      if (zipcode && oldZipcode !== zipcode) {
         this.getCurrentWeather({ zipcode });
         this.getForecast({ zipcode });
       }
@@ -90,7 +97,6 @@ export default class Details extends React.Component {
   getCurrentWeather = ({ zipcode, coords }) =>
     weatherAPI("/weather", { zipcode, coords })
       .then(response => {
-        console.log(response);
         if (response.cod === "404" || response.cod === "429") {
           this.handleError();
         } else {
@@ -98,6 +104,13 @@ export default class Details extends React.Component {
           this.setState({
             currentWeather: response,
             loadingCurrentWeather: false
+          });
+          console.log("eta ho", response);
+          addRecentSearch({
+            id: response.dt,
+            name: response.name,
+            lat: response.coord.lat,
+            lon: response.coord.lon
           });
         }
       })

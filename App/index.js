@@ -36,7 +36,7 @@ export default function App() {
             headerTitle: route.params?.title ?? "",
             headerStyle: {
               backgroundColor: "#3145b7",
-              borderBottomColor: "#3145b7"
+              shadowColor: "transparent"
             },
             headerTintColor: "#fff",
             headerLeft: null,
