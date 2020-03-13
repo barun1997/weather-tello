@@ -8,15 +8,23 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/masked-view": "0.1.5",
+    "@react-navigation/native": "^5.0.9",
+    "@react-navigation/stack": "^5.1.1",
+    "date-fns": "^2.10.0",
     "expo": "^36.0.0",
     "mem": "^6.0.1",
     "react": "16.9.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.1.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.1.tar.gz",
+    "react-native-gesture-handler": "~1.5.0",
+    "react-native-reanimated": "~1.4.0",
+    "react-native-safe-area-context": "0.6.0",
+    "react-native-screens": "2.0.0-alpha.12"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.0.0",
     "eslint": "^6.8.0",
-    "eslint-config-handlebarlabs": "^0.0.4",
+    "eslint-config-handlebarlabs": "0.0.4",
     "prettier": "^1.19.1"
   },
   "private": true
