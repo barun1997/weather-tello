@@ -91,10 +91,10 @@ export default class Details extends React.Component {
     weatherAPI("/weather", { zipcode, coords })
       .then(response => {
         console.log(response);
-        this.props.navigation.setParams({ title: response.name });
-        if (response.cod === "404" && response.cod === "429") {
+        if (response.cod === "404" || response.cod === "429") {
           this.handleError();
         } else {
+          this.props.navigation.setParams({ title: response.name });
           this.setState({
             currentWeather: response,
             loadingCurrentWeather: false
