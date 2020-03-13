@@ -10,7 +10,7 @@ The icons used are from [Open Weather Icons](https://github.com/isneezy/open-wea
 
 ### Installation
 
-- `git clone https://github.com/ReactNativeSchool/react-native-weather.git`
+- `git clone git@github.com:barun1997/weather-tello.git`
 - `yarn install`/`npm install`
 
 ### Running
