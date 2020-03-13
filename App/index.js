@@ -28,7 +28,7 @@ const HeaderRightButton = ({ onPress, style, icon }) => (
 export default function App() {
   return (
     <NavigationContainer>
-      <AppStack.Navigator initialRouteName="Search" mode="modal">
+      <AppStack.Navigator mode="modal">
         <AppStack.Screen
           name="Details"
           component={Details}
@@ -39,6 +39,7 @@ export default function App() {
               borderBottomColor: "#3145b7"
             },
             headerTintColor: "#fff",
+            headerLeft: null,
             headerRight: () => (
               <>
                 <StatusBar barStyle="light-content" />

@@ -3,7 +3,8 @@ import {
   ActivityIndicator,
   ScrollView,
   SafeAreaView,
-  View
+  View,
+  Alert
 } from "react-native";
 import { format } from "date-fns";
 
@@ -56,37 +57,66 @@ export default class Details extends React.Component {
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
+      console.log(position);
       this.getCurrentWeather({ coords: position.coords });
       this.getForecast({ coords: position.coords });
     });
-
-    const zipcode = 37064;
-    // this.getCurrentWeather({ zipcode });
-    // this.getForecast({ zipcode });
+    console.log("is it called inside?");
   }
 
-  getCurrentWeather = ({ zipcode, coords }) => {
-    return weatherAPI("/weather", { zipcode, coords })
+  componentDidUpdate(prevProps) {
+    const { route } = this.props;
+    console.log("Inside componentDidUpdate", route);
+    if (route.params.zipcode) {
+      const oldZipcode = prevProps.route.params.zipcode;
+      const zipcode = route.params.zipcode;
+
+      if (oldZipcode !== zipcode) {
+        this.getCurrentWeather({ zipcode });
+        this.getForecast({ zipcode });
+      }
+    }
+  }
+
+  handleError = () => {
+    Alert.alert("No location data found!", "Please try again", [
+      {
+        text: "Okay",
+        onPress: () => this.props.navigation.navigate("Search")
+      }
+    ]);
+  };
+
+  getCurrentWeather = ({ zipcode, coords }) =>
+    weatherAPI("/weather", { zipcode, coords })
       .then(response => {
-        this.props.navigation.setParams({ title: response.name });
-        this.setState({
-          currentWeather: response,
-          loadingCurrentWeather: false
-        });
+        console.log(response);
+        if (response.cod === "404" || response.cod === "429") {
+          this.handleError();
+        } else {
+          this.props.navigation.setParams({ title: response.name });
+          this.setState({
+            currentWeather: response,
+            loadingCurrentWeather: false
+          });
+        }
       })
       .catch(err => {
         console.log("current error", err);
+        this.handleError();
       });
-  };
 
   getForecast = ({ zipcode, coords }) =>
     weatherAPI("/forecast", { zipcode, coords })
       .then(response => {
-        this.setState({
-          forecastWeather: groupForecastByDay(response.list),
-          loadingForecastWeather: false
-        });
+        if (response.cod !== "404") {
+          this.setState({
+            forecastWeather: groupForecastByDay(response.list),
+            loadingForecastWeather: false
+          });
+        }
       })
+
       .catch(err => {
         console.log("forecast error", err);
       });

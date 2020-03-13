@@ -5,9 +5,12 @@ import { SearchBar } from "../components/SearchBar";
 import { SearchItem } from "../components/List";
 
 class Search extends React.Component {
-  state = {
-    query: ""
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: ""
+    };
+  }
 
   render() {
     return (
